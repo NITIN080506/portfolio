@@ -144,7 +144,7 @@ const App = () => {
             <div className="relative group max-w-sm mx-auto md:mx-0">
               <div className="absolute -inset-4 border-2 border-teal-400/50 rounded-xl translate-x-4 translate-y-4 transition-transform group-hover:translate-x-2 group-hover:translate-y-2 z-0"></div>
               <div className="relative aspect-square bg-slate-800 rounded-xl overflow-hidden z-10 border border-slate-700 flex items-center justify-center">
-                <img src="/profile.jpg" alt="Nitin Keshav Puthi" className="w-full h-full object-contain" />
+                <img src={`${import.meta.env.BASE_URL}profile.jpg`} alt="Nitin Keshav Puthi" className="w-full h-full object-contain" />
                 <div className="absolute inset-0 bg-teal-500/10 group-hover:bg-transparent transition-colors duration-300"></div>
               </div>
             </div>
