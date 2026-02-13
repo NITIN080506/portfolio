@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
+import ScrollProgressBar from './components/ScrollProgressBar';
 import { 
   Github, 
   Linkedin, 
@@ -55,6 +56,7 @@ const App = () => {
 
   return (
     <div className="min-h-screen bg-slate-900 text-slate-200 font-sans selection:bg-teal-500/30">
+      <ScrollProgressBar />
       
       {/* Navigation */}
       <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${isScrolled ? 'bg-slate-900/90 backdrop-blur-md shadow-lg py-4' : 'bg-transparent py-6'}`}>
@@ -246,8 +248,8 @@ const App = () => {
               <div className="flex justify-between items-center mb-8 relative z-10">
                 <Layout className="text-teal-400" size={40} />
                 <div className="flex gap-4">
-                  <a href="#" className="text-slate-400 hover:text-teal-400 transition-colors"><Github size={20} /></a>
-                  <a href="#" className="text-slate-400 hover:text-teal-400 transition-colors"><ExternalLink size={20} /></a>
+                  <a href="https://github.com/NITIN080506/quiz-platform.git" target="_blank" className="text-slate-400 hover:text-teal-400 transition-colors"><Github size={20} /></a>
+                  <a href="https://nitin080506.github.io/quiz-platform" target="_blank" className="text-slate-400 hover:text-teal-400 transition-colors"><ExternalLink size={20} /></a>
                 </div>
               </div>
               <h3 className="text-2xl font-bold text-slate-200 mb-3 group-hover:text-teal-400 transition-colors">SmartQuiz : Full-Stack Quiz Management Platform</h3>
@@ -289,7 +291,8 @@ const App = () => {
               <div className="flex justify-between items-center mb-8 relative z-10">
                 <Terminal className="text-teal-400" size={40} />
                 <div className="flex gap-4">
-                  <a href="#" className="text-slate-400 hover:text-teal-400 transition-colors"><Github size={20} /></a>
+                  <a href="https://github.com/NITIN080506/weather-project.git" target="_blank" className="text-slate-400 hover:text-teal-400 transition-colors"><Github size={20} /></a>
+                  <a href="https://nitin080506.github.io/weather-project" target="_blank" className="text-slate-400 hover:text-teal-400 transition-colors"><ExternalLink size={20} /></a>
                 </div>
               </div>
               <h3 className="text-2xl font-bold text-slate-200 mb-3 group-hover:text-teal-400 transition-colors">SkyCast : Weather Forecasting Web Application</h3>
@@ -309,8 +312,8 @@ const App = () => {
               <div className="flex justify-between items-center mb-8 relative z-10">
                 <Database className="text-teal-400" size={40} />
                 <div className="flex gap-4">
-                  <a href="#" className="text-slate-400 hover:text-teal-400 transition-colors"><Github size={20} /></a>
-                  <a href="#" className="text-slate-400 hover:text-teal-400 transition-colors"><ExternalLink size={20} /></a>
+                  <a href="https://github.com/NITIN080506/nutrio-kitchen.git" target="_blank" className="text-slate-400 hover:text-teal-400 transition-colors"><Github size={20} /></a>
+                  <a href="https://nitin080506.github.io/nutrio-kitchen" target="_blank" className="text-slate-400 hover:text-teal-400 transition-colors"><ExternalLink size={20} /></a>
                 </div>
               </div>
               <h3 className="text-2xl font-bold text-slate-200 mb-3 group-hover:text-teal-400 transition-colors">Nutrio : Smart Health & Nutrition Recommendation System</h3>
