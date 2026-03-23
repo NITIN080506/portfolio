@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import './App.css';
 import ScrollProgressBar from './components/ScrollProgressBar';
 import { 
@@ -15,9 +15,43 @@ import {
   User
 } from 'lucide-react';
 
+const VISITOR_API_URL = import.meta.env.VITE_VISITOR_API_URL || 'https://sv0xr478zc.execute-api.ap-south-1.amazonaws.com/count';
+
+const extractVisitorCount = (payload) => {
+  if (typeof payload === 'number') return payload;
+
+  if (typeof payload === 'string') {
+    const parsedNumber = Number(payload);
+    if (!Number.isNaN(parsedNumber)) return parsedNumber;
+
+    try {
+      const parsedJson = JSON.parse(payload);
+      return extractVisitorCount(parsedJson);
+    } catch {
+      return null;
+    }
+  }
+
+  if (payload && typeof payload === 'object') {
+    const candidateKeys = ['count', 'visitorCount', 'visitors', 'value'];
+    for (const key of candidateKeys) {
+      if (payload[key] !== undefined) {
+        return extractVisitorCount(payload[key]);
+      }
+    }
+
+    if (payload.body !== undefined) {
+      return extractVisitorCount(payload.body);
+    }
+  }
+
+  return null;
+};
+
 const App = () => {
   const [activeSection, setActiveSection] = useState('home');
   const [isScrolled, setIsScrolled] = useState(false);
+  const [visitorCount, setVisitorCount] = useState('...');
 
   // Handle scroll events for navbar styling
   useEffect(() => {
@@ -47,6 +81,40 @@ const App = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  useEffect(() => {
+    const controller = new AbortController();
+
+    const loadVisitorCount = async () => {
+      try {
+        const response = await fetch(VISITOR_API_URL, {
+          method: 'GET',
+          signal: controller.signal,
+        });
+
+        if (!response.ok) {
+          throw new Error(`Visitor API request failed with status ${response.status}`);
+        }
+
+        const data = await response.json();
+        const parsedCount = extractVisitorCount(data);
+
+        if (parsedCount === null || Number.isNaN(parsedCount)) {
+          throw new Error('Visitor API response did not include a numeric count');
+        }
+
+        setVisitorCount(parsedCount.toLocaleString());
+      } catch (error) {
+        if (error.name !== 'AbortError') {
+          console.error('Failed to load visitor count:', error);
+          setVisitorCount('N/A');
+        }
+      }
+    };
+
+    loadVisitorCount();
+    return () => controller.abort();
+  }, []);
+
   const scrollTo = (id) => {
     const element = document.getElementById(id);
     if (element) {
@@ -63,6 +131,9 @@ const App = () => {
         <div className="max-w-6xl mx-auto px-6 md:px-12 flex justify-between items-center">
           <div className="text-teal-400 font-mono font-bold text-xl tracking-tighter">
             <span className="text-slate-200">Nitin</span>.dev
+          </div>
+          <div className="hidden sm:flex items-center text-xs md:text-sm font-mono text-slate-300 border border-slate-700 rounded-full px-3 py-1 bg-slate-900/60">
+            Visitors: <span className="text-teal-400 ml-2">{visitorCount}</span>
           </div>
           <div className="hidden md:flex space-x-8 text-sm font-medium">
             {['About', 'Learning', 'Projects', 'Contact'].map((item) => (
