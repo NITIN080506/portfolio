@@ -30,39 +30,6 @@ import {
   ArrowUpRight
 } from 'lucide-react';
 
-const VISITOR_API_URL = import.meta.env.VITE_VISITOR_API_URL || 'https://sv0xr478zc.execute-api.ap-south-1.amazonaws.com/count';
-
-const extractVisitorCount = (payload) => {
-  if (typeof payload === 'number') return payload;
-
-  if (typeof payload === 'string') {
-    const parsedNumber = Number(payload);
-    if (!Number.isNaN(parsedNumber)) return parsedNumber;
-
-    try {
-      const parsedJson = JSON.parse(payload);
-      return extractVisitorCount(parsedJson);
-    } catch {
-      return null;
-    }
-  }
-
-  if (payload && typeof payload === 'object') {
-    const candidateKeys = ['count', 'visitorCount', 'visitors', 'value'];
-    for (const key of candidateKeys) {
-      if (payload[key] !== undefined) {
-        return extractVisitorCount(payload[key]);
-      }
-    }
-
-    if (payload.body !== undefined) {
-      return extractVisitorCount(payload.body);
-    }
-  }
-
-  return null;
-};
-
 // LeetCode Icon matching Lucide style
 const LeetCodeIcon = ({ size = 20, className = "" }) => (
   <svg
@@ -85,7 +52,6 @@ const LeetCodeIcon = ({ size = 20, className = "" }) => (
 const App = () => {
   const [activeSection, setActiveSection] = useState('home');
   const [isScrolled, setIsScrolled] = useState(false);
-  const [visitorCount, setVisitorCount] = useState('...');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [copiedType, setCopiedType] = useState(null);
   const [activeProjectFilter, setActiveProjectFilter] = useState('all');
@@ -115,41 +81,6 @@ const App = () => {
     handleScroll();
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  // Visitor API counter logic
-  useEffect(() => {
-    const controller = new AbortController();
-
-    const loadVisitorCount = async () => {
-      try {
-        const response = await fetch(VISITOR_API_URL, {
-          method: 'GET',
-          signal: controller.signal,
-        });
-
-        if (!response.ok) {
-          throw new Error(`Visitor API request failed with status ${response.status}`);
-        }
-
-        const data = await response.json();
-        const parsedCount = extractVisitorCount(data);
-
-        if (parsedCount === null || Number.isNaN(parsedCount)) {
-          throw new Error('Visitor API response did not include a numeric count');
-        }
-
-        setVisitorCount(parsedCount.toLocaleString());
-      } catch (error) {
-        if (error.name !== 'AbortError') {
-          console.error('Failed to load visitor count:', error);
-          setVisitorCount('1,420+');
-        }
-      }
-    };
-
-    loadVisitorCount();
-    return () => controller.abort();
   }, []);
 
   const scrollTo = (id) => {
@@ -372,16 +303,6 @@ const App = () => {
             <span className="text-slate-400 group-hover:text-teal-300 transition-colors"> /&gt;</span>
           </button>
 
-          {/* Live Visitor Counter Badge */}
-          <div className="hidden sm:inline-flex items-center gap-2 text-xs font-mono text-slate-300 border border-slate-700/80 rounded-full px-3.5 py-1.5 bg-slate-800/60 backdrop-blur-sm shadow-inner">
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-            </span>
-            <span className="text-slate-400">Visitors:</span>
-            <span className="text-teal-400 font-semibold">{visitorCount}</span>
-          </div>
-
           {/* Desktop Nav Items */}
           <div className="hidden md:flex items-center space-x-7 text-sm font-medium">
             {[
@@ -429,13 +350,6 @@ const App = () => {
         {/* Mobile Dropdown Menu */}
         {mobileMenuOpen && (
           <div className="md:hidden bg-slate-900/95 backdrop-blur-xl border-b border-slate-800 px-6 py-6 space-y-4 animate-in fade-in slide-in-from-top-4 duration-200">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-800">
-              <span className="text-xs font-mono text-slate-400">Status</span>
-              <div className="inline-flex items-center gap-2 text-xs font-mono text-slate-300">
-                <span className="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                Visitors: <span className="text-teal-400 font-semibold">{visitorCount}</span>
-              </div>
-            </div>
             {[
               { id: 'about', label: '01. About Me' },
               { id: 'skills', label: '02. Technical Skills' },
